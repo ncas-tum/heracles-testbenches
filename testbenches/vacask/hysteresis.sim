@@ -53,7 +53,9 @@ control
   save (
     default
   )
-  analysis tran2 tran stop=1.2m step=1u maxstep=1u
+  sweep reset instance="vpulse" parameter="val0" values=[-4, 4]
+    sweep set instance="vpulse" parameter="val1" from=-4 to=4 mode="lin" points=50
+      analysis tran2 tran stop=1.2m step=1u maxstep=1u
 
   postprocess(PYTHON, "postproc.py")
 endc
