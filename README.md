@@ -1,8 +1,19 @@
 # Heracles-testbenches
 
-Testbences for the Heracles compact model based on open-source software.
+Testbenches for the Heracles compact model based on open-source software.
 
 There currently are testbenches for the ngspice and vacask simulators.
+
+## Usage
+You can install the required dependencies easily with the nix package manager and flakes:
+```sh
+nix develop
+```
+
+Then you can run the testbenches by navigating the folder and typing, for example
+```sh
+vacask hysteresis.sim
+```
 
 ## Documentation
 [Heracles Documentation](https://ncas-tum.github.io/heracles/)
@@ -43,4 +54,3 @@ If you find Heracles useful in your work, consider citing on of the following ar
   journal={arXiv preprint arXiv:2511.21267},
   year={2025}
 }
-

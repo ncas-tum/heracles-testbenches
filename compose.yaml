@@ -1,8 +1,0 @@
-services:
-  main:
-    build: .
-    stdin_open: true
-    tty: true
-    volumes:
-      - .:/heracles-testbenches
-    command: /bin/bash
