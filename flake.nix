@@ -1,5 +1,5 @@
 {
-  description = "Heracles testbenches";
+  description = "Heracles SPICE simulation environment";
 
   inputs = {
     veriloga-flake.url = "github:ncas-tum/veriloga-flake";
@@ -8,7 +8,7 @@
   };
 
   outputs =
-    inputs@{ flake-parts, veriloga-flake, ... }:
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
@@ -16,19 +16,16 @@
       ];
 
       perSystem =
-        { pkgs, system, ... }:
+        { pkgs, inputs', ... }:
         let
-          openvaf = veriloga-flake.packages.${system}.openvaf;
-          vacask = veriloga-flake.packages.${system}.vacask;
-          heracles = pkgs.callPackage ./heracles.nix {
-            inherit openvaf;
-          };
+          heracles = pkgs.callPackage nix/heracles.nix { };
         in
         {
+          packages.default = heracles;
+
           devShells.default = pkgs.mkShell {
-            inputsFrom = [ veriloga-flake.devShells.${system}.default ];
-            buildInputs = [ heracles ];
-            SIM_MODULE_PATH = "${vacask}/lib/vacask/mod/:${heracles}/lib/";
+            inputsFrom = [ inputs'.veriloga-flake.devShells.default ];
+            SIM_MODULE_PATH = "${pkgs.vacask}/lib/vacask/mod/:${heracles}/lib/";
           };
         };
     };

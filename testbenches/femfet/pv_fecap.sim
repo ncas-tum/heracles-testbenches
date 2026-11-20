@@ -1,0 +1,38 @@
+FeCap hysteresis simulation
+
+ground 0
+
+// Generic devices...
+load "resistor.osdi"
+load "capacitor.osdi"
+
+// ... and their models (create masters)
+model resistor resistor
+model isource isource
+model vsource vsource
+
+// FeCap (Heracles) model
+include "../../models/femfet.lib"
+
+// Polarization hysteresis testbench
+subckt fecap()
+  vpulse (vin 0) vsource type="pulse" val0=-3 val1=3 delay=0 rise=500u fall=500u width=1u
+  r1 (vin te) resistor r=50
+  x1 (te 0) fecap_femfet area=16e-12
+ends
+
+control
+  abort always
+
+  options op_debug=0 homotopy_debug=0 nr_debug=0 matrixcheck=1 //tran_method="trap"
+
+  elaborate circuit("fecap")
+  save (
+    default
+  )
+  
+  analysis pv tran stop=1m step=100n maxstep=100n
+
+  postprocess(PYTHON, "pv_fecap.py")
+endc
+

@@ -21,14 +21,4 @@ stdenv.mkDerivation {
   buildPhase = "
     mkdir -p $out/lib
     openvaf-r heracles.va -o $out/lib/heracles.osdi";
-
-  meta = {
-    description = "HfO2 Ferroelectric Capacitor VerilogA Compact Model for Circuit Simulation ";
-    homepage = "https://github.com/ncas-tum/heracles";
-    license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [
-      fehlings
-    ];
-    platforms = lib.platforms.unix;
-  };
 }

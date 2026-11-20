@@ -1,0 +1,55 @@
+load "heracles.osdi"
+load "psp103v4.osdi"
+
+subckt fefet(d g s b)
+  parameters w=200n l=200n
+  x1 (g g_n) fecap_fefet area=w*l
+  m1 (d g_n s b) nmos_fefet w=w l=l
+ends
+
+subckt nmos_fefet (d g s b)
+parameters w=1u l=0.2u ld=0.05u ls=0.01u
+  m (d g s b) psp103n_fefet w=w l=l ad=w*ld as=w*ls pd=2*(w+ld) ps=2*(w+ls)
+ends
+
+model fecap_fefet heracles_v (
+  p_ferro = 0.6
+  t_fe = 9.8e-9
+  t_int = 2e-9
+  eps_fe = 70
+  eps_de = 20
+  eps_int = 7
+  w_b = 1.05
+  d_e = 7.5e-9
+  e_off = 0
+  p_s = 20e-2
+  n_depl = 1.2e28
+  eps_depl = 2.2
+  q_fix_depl_u = -20e-2
+  q_fix_depl_d = 8e-2
+  m_eff_fe = 0.4
+  m_eff_int = 0.3
+  phi_b_fe = 2
+  phi_b_int = 2.7
+  n_tr_fe = 1e18
+  n_tr_int = 1e23
+  w_tr_t_fe = 2.1
+  w_tr_t_int = 3
+  w_tr_rel_fe = 1.19 
+  w_tr_rel_int = 0.4
+  dos_trap_fe = 1e-8
+  dos_trap_int = 1e-8
+  x_c_fe = 5e-9
+  x_c_int = 1e-9
+)
+
+model psp103n_fefet psp103va (
+    type=1
+    dta=0
+    swgeo=1
+    swigate=0     // Gate current
+    swgidl=0      // GIDL
+    toxo=1e-9
+    epsroxo = 3.9
+)
+

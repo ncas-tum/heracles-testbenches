@@ -1,0 +1,42 @@
+FeCap hysteresis simulation
+
+ground 0
+
+// Generic devices...
+load "resistor.osdi"
+
+// ... and their models (create masters)
+model resistor resistor
+model isource isource
+model vsource vsource
+
+// FeCap (Heracles) model
+include "../../models/femfet.lib"
+
+// Polarization hysteresis testbench
+subckt fecap()
+  vdrain (vdrain 0) vsource type="dc" dc=100m
+  vread (vin vin_ii) vsource type="pulse" val0=0 val1=0.1 delay=1m rise=1u fall=1u width=498u period=1.5m
+  vpulse_down (vin_ii vin_i) vsource type="pulse" val0=0 val1=-5 delay=0 rise=1u fall=1u width=498u
+  vpulse_up (vin_i 0) vsource type="pulse" val0=0 val1=5 delay=1.5m rise=1u fall=1u width=498u
+  r1 (vin g) resistor r=50
+  r2 (vdrain d) resistor r=50
+  m1 (d g 0 0) femfet w=4u l=4u area_mfm=2u*1u
+ends
+
+control
+  abort always
+
+  options op_debug=0 homotopy_debug=0 nr_debug=0 matrixcheck=1
+
+  elaborate circuit("fecap")
+
+  save (
+    default
+  )
+  
+  // Drain current gets noisy with auto-step size
+  analysis pv tran stop=3m step=100n maxstep=100n
+  
+  postprocess(PYTHON, "pv_femfet.py")
+endc
